@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Product from "./Product.js";
+import AddProductForm from "./AddProductForm";
+import ProductsList from "./ProductsList";
 
 export default function StoreFront() {
   const [products, setProducts] = useState([]);
@@ -7,7 +9,7 @@ export default function StoreFront() {
   const [description, setDescription] = useState("");
   const [validation, setValidation] = useState("");
 
-  function handleSubmit(e) {
+  function handleFormSubmit(e) {
     e.preventDefault();
     if (!name) {
       setValidation("Please enter a name");
@@ -29,6 +31,13 @@ export default function StoreFront() {
     setDescription("");
     setValidation("");
   }
+  function handleNameChange(e) {
+    setName(e.target.value);
+  }
+
+  function handleDescriptionChange(e) {
+    setDescription(e.target.value);
+  }
 
   function handleDeleteProduct(id) {
     setProducts(products.filter((product) => product.id !== id));
@@ -36,52 +45,15 @@ export default function StoreFront() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            value={name}
-            id="name"
-            placeholder="Enter the name"
-            className="textfield"
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="description">Description</label>
-          <input
-            type="text"
-            value={description}
-            id="description"
-            placeholder="Enter the description"
-            className="textfield"
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="form-footer">
-          <div className="validation-message"></div>
-          <input
-            type="submit"
-            className="btn btn-primary"
-            value="Add product"
-          />
-        </div>
-      </form>
-      <div>{products.length === 0 && <p>Add your first product</p>}</div>
-      <ul className="store-front">
-        {products.map((product) => (
-          <li key={product.id}>
-            <Product details={product} />
-            <button
-              className="btn-outline btn-delete"
-              onClick={() => handleDeleteProduct(product.id)}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+      <AddProductForm
+        onFormSubmit={handleFormSubmit}
+        name={name}
+        description={description}
+        validation={validation}
+        onNameChange={handleNameChange}
+        onDescriptionChange={handleDescriptionChange}
+      />
+      <ProductsList products={products} onDeleteClick={handleDeleteProduct} />
     </>
   );
 }
